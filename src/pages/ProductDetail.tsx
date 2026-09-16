@@ -41,7 +41,23 @@ const ProductDetail = () => {
 
   const canonicalUrl = `https://oceankingwholesalebh.com/fish/${species}/${product.id}`;
   const pageTitle = `${product.name} – ${product.type} | Ocean King Fishmarket`;
-  const pageDesc = `${product.name} from ${product.origin}. ${product.type}. Fresh wild-caught ${speciesInfo[species].name.toLowerCase()} delivered to NYC, Long Island & NJ.`.slice(0, 158);
+  const pageDesc = `${product.name} — $9.99/lb wild-caught ${speciesInfo[species].name.toLowerCase()} from ${product.origin}. 5 lb minimum, delivered fresh to NYC, Long Island & NJ within 24 hours.`.slice(0, 160);
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: pageDesc,
+    image: `https://oceankingwholesalebh.com${product.image}`,
+    brand: { '@type': 'Brand', name: 'Ocean King Fishmarket' },
+    offers: {
+      '@type': 'Offer',
+      url: canonicalUrl,
+      priceCurrency: 'USD',
+      price: product.price.toFixed(2),
+      availability: 'https://schema.org/InStock',
+      priceValidUntil: '2027-12-31',
+    },
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,6 +69,7 @@ const ProductDetail = () => {
         <meta property="og:description" content={pageDesc} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="product" />
+        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Helmet>
       <Header />
       <main>
