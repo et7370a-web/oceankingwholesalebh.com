@@ -1,10 +1,10 @@
 // Builds the production bundle and publishes it to docs/ for GitHub Pages.
 // Usage: node scripts/build-pages.cjs
 //
-// GitHub Pages serves this repo from main branch /docs. Because the app is a
-// client-side-routed SPA hosted at a subpath (/oceanfishmarketbh/), this
-// script also injects the standard redirect trick so deep links and page
-// refreshes (e.g. /fish/salmon) don't 404.
+// GitHub Pages serves this repo from main branch /docs, at the custom domain
+// in public/CNAME (oceanfishmarket.com), served from root. Because the app is
+// a client-side-routed SPA, this script also injects the standard redirect
+// trick so deep links and page refreshes (e.g. /fish/salmon) don't 404.
 
 const { execSync } = require('node:child_process');
 const fs = require('node:fs');
@@ -48,7 +48,7 @@ const notFound = `<!doctype html>
     <title>Ocean Fish Market</title>
     <script>
       sessionStorage.redirect = location.href;
-      location.replace("/oceanfishmarketbh/");
+      location.replace("/");
     </script>
   </head>
   <body></body>
