@@ -39,7 +39,7 @@ const ProductDetail = () => {
   const speciesProducts = getProductsBySpecies(species);
   const prepTypes = [...new Set(speciesProducts.map((p) => p.type))];
 
-  const canonicalUrl = `https://oceanfishmarketbh.lovable.app/fish/${species}/${product.id}`;
+  const canonicalUrl = `https://oceankingwholesalebh.com/fish/${species}/${product.id}`;
   const pageTitle = `${product.name} – ${product.type} | Ocean King Fishmarket`;
   const pageDesc = `${product.name} from ${product.origin}. ${product.type}. Fresh wild-caught ${speciesInfo[species].name.toLowerCase()} delivered to NYC, Long Island & NJ.`.slice(0, 158);
 

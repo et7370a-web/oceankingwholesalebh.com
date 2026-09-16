@@ -17,10 +17,10 @@ const Index = () => {
       <Helmet>
         <title>Ocean King Fishmarket – Fresh Wild-Caught Seafood | Brooklyn, NY</title>
         <meta name="description" content="Brooklyn's trusted source for fresh wild-caught fish since 1994. Salmon, tuna, branzino & more delivered to NYC, Long Island & NJ. Call (646) 750-9232." />
-        <link rel="canonical" href="https://oceanfishmarketbh.lovable.app/" />
+        <link rel="canonical" href="https://oceankingwholesalebh.com/" />
         <meta property="og:title" content="Ocean King Fishmarket – Fresh Wild-Caught Seafood" />
         <meta property="og:description" content="Premium wild-caught seafood delivered fresh to NYC, Long Island & NJ. Order online or call (646) 750-9232." />
-        <meta property="og:url" content="https://oceanfishmarketbh.lovable.app/" />
+        <meta property="og:url" content="https://oceankingwholesalebh.com/" />
       </Helmet>
       <Header />
       <main>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://oceanfishmarketbh.lovable.app/sitemap.xml
+Sitemap: https://oceankingwholesalebh.com/sitemap.xml
