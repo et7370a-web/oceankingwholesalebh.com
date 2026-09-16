@@ -5,8 +5,8 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Served from the oceanfishmarket.com custom domain root, not a GitHub Pages subpath.
-  base: "/",
+  // Served at the GitHub Pages subpath (no custom domain is configured).
+  base: mode === "production" ? "/oceanfishmarketbh/" : "/",
   server: {
     host: "::",
     port: 8080,
