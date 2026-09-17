@@ -50,7 +50,7 @@ const Footer = () => {
                   OCEAN KING
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.3em] text-ocean-surface/60 -mt-1">
-                  Fishmarket
+                  Wholesale
                 </span>
               </div>
             </motion.a>

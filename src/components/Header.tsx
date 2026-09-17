@@ -41,7 +41,7 @@ const Header = () => {
                   OCEAN KING
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground -mt-1">
-                  Fishmarket
+                  Wholesale
                 </span>
               </div>
             </motion.a>
