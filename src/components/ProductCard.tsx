@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, ShoppingCart, Loader2 } from 'lucide-react';
+import { Star, ShoppingCart, Loader2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/data/products';
 import { CUT_STYLES, DEFAULT_CUT_STYLE, getCutStyleLabel } from '@/data/cutStyles';
@@ -111,54 +111,71 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
               </p>
             </div>
 
-            {/* Cut Style */}
-            <div
-              className="mb-3"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            >
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
-                Cut Style
-              </label>
-              <Select value={cutStyle} onValueChange={setCutStyle}>
-                <SelectTrigger className="h-9 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CUT_STYLES.map((style) => (
-                    <SelectItem key={style.value} value={style.value}>
-                      {style.label} — {style.description}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Price & Add to Cart */}
-            <div className="flex items-end justify-between gap-2">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-primary">
-                  ${product.price.toFixed(2)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  / lb
-                </span>
+            {product.callForPrice ? (
+              /* Special order: call for pricing */
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Special order — price varies by size and availability.
+                </p>
+                <a href="tel:+16467509232" className="block">
+                  <Button size="sm" className="w-full">
+                    <Phone className="w-4 h-4 mr-1" />
+                    Call for Pricing
+                  </Button>
+                </a>
               </div>
-              <Button
-                size="sm"
-                onClick={handleAddToCart}
-                disabled={isLoading}
-                className="flex-shrink-0"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>
-                    <ShoppingCart className="w-4 h-4 mr-1" />
-                    Add
-                  </>
-                )}
-              </Button>
-            </div>
+            ) : (
+              <>
+                {/* Cut Style */}
+                <div
+                  className="mb-3"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                >
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
+                    Cut Style
+                  </label>
+                  <Select value={cutStyle} onValueChange={setCutStyle}>
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CUT_STYLES.map((style) => (
+                        <SelectItem key={style.value} value={style.value}>
+                          {style.label} — {style.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Price & Add to Cart */}
+                <div className="flex items-end justify-between gap-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-primary">
+                      ${product.price.toFixed(2)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      / lb
+                    </span>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handleAddToCart}
+                    disabled={isLoading}
+                    className="flex-shrink-0"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-4 h-4 mr-1" />
+                        Add
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </Link>

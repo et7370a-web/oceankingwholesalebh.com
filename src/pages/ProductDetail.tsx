@@ -9,8 +9,6 @@ import { Button } from '@/components/ui/button';
 import { products, speciesInfo, getProductsBySpecies } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 
-const isWholeFish = (type: string) => type.toLowerCase().includes('whole');
-
 const ProductDetail = () => {
   const { species, productId } = useParams<{ species: string; productId: string }>();
   const [quantity, setQuantity] = useState(5);
@@ -32,7 +30,6 @@ const ProductDetail = () => {
     );
   }
 
-  const wholeFish = isWholeFish(product.type);
   const relatedProducts = getProductsBySpecies(species).filter((p) => p.id !== product.id);
 
   // Get all available prep types for this species
@@ -164,14 +161,14 @@ const ProductDetail = () => {
 
               {/* Pricing & Quantity */}
               <div className="mb-6 p-5 sm:p-6 bg-card rounded-2xl border border-border/50 shadow-ocean">
-                {wholeFish ? (
+                {product.callForPrice ? (
                   <div>
                     <div className="flex items-center gap-3 mb-3">
                       <Phone className="w-6 h-6 text-primary" />
                       <span className="font-display text-xl sm:text-2xl font-bold text-primary">Call for Pricing</span>
                     </div>
                     <p className="text-muted-foreground text-sm mb-4">
-                      Whole fish pricing varies by size and availability. Give us a call for
+                      Special order — price varies by size and availability. Give us a call for
                       current stock and pricing.
                     </p>
                     <a href="tel:+16467509232">

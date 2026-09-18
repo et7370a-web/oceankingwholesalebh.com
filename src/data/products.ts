@@ -29,6 +29,7 @@ export interface Product {
   image: string;
   badge?: string;
   badgeColor?: string;
+  callForPrice?: boolean;
 }
 
 const WHOLE_PRICE = 9.99;
@@ -53,6 +54,7 @@ export const products: Product[] = [
   { id: 18, name: 'Striped Bass', species: 'striped-bass', origin: 'USA', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: stripedBassWholeAsset },
   { id: 19, name: 'Scottish Salmon', species: 'salmon', origin: 'Scotland', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: salmonWholeAsset },
   { id: 20, name: 'Faroe Island Salmon', species: 'salmon', origin: 'Faroe Islands', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: salmonWholeAsset },
+  { id: 21, name: 'King Salmon', species: 'salmon', origin: 'Alaska', price: 0, weight: 'Varies', type: 'Whole Fish', rating: 5, image: salmonWholeAsset, callForPrice: true },
 ];
 
 // Species info for pages
@@ -67,7 +69,7 @@ export const speciesInfo: Record<string, SpeciesInfo> = {
   salmon: {
     slug: 'salmon',
     name: 'Salmon',
-    description: 'Wild-caught salmon sourced from Scotland and the Faroe Islands. Known for its rich, buttery flavor and beautiful pink-orange flesh.',
+    description: 'Wild-caught salmon sourced from Scotland, the Faroe Islands, and Alaskan King Salmon. Known for its rich, buttery flavor and beautiful pink-orange flesh.',
     heroImage: salmonWholeAsset,
   },
   tuna: {
