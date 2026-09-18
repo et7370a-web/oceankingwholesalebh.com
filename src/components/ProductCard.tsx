@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Loader2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Product } from '@/data/products';
-import { CUT_STYLES, DEFAULT_CUT_STYLE, getCutStyleLabel } from '@/data/cutStyles';
+import { Product, speciesInfo } from '@/data/products';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCartStore } from '@/stores/cartStore';
 import { useQuery } from '@tanstack/react-query';
-import { fetchShopifyProducts } from '@/lib/shopify';
+import { fetchShopifyProducts, ShopifyProduct } from '@/lib/shopify';
 import { toast } from 'sonner';
 
 interface ProductCardProps {
@@ -16,49 +15,62 @@ interface ProductCardProps {
   index: number;
 }
 
+// Our species display name doesn't always match Shopify's product naming
+// (e.g. we call it "Buffalo Fish", Shopify lists it as "Buffalo Fillet" / "Buffalo Whole").
+const SPECIES_SHOPIFY_ALIAS: Record<string, string> = {
+  buffalo: 'Buffalo',
+};
+
 const ProductCard = ({ product, index }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
-  const [cutStyle, setCutStyle] = useState(DEFAULT_CUT_STYLE);
+  const [selectedId, setSelectedId] = useState<string>('');
 
-  // Fetch matching Shopify product by title
+  // Fetch the real Shopify catalog
   const { data: shopifyProducts } = useQuery({
     queryKey: ['shopify-products'],
     queryFn: () => fetchShopifyProducts(50),
     staleTime: 5 * 60 * 1000,
   });
 
+  // Real Shopify products for this species (e.g. "Tuna Fillet Fresh", "Tuna Steaks" for tuna) —
+  // each is a distinct cut with its own real price, so the dropdown IS the Shopify catalog.
+  const speciesName = SPECIES_SHOPIFY_ALIAS[product.species] ?? speciesInfo[product.species]?.name ?? product.name;
+  const matches: ShopifyProduct[] = useMemo(() => {
+    if (!shopifyProducts) return [];
+    const needle = speciesName.toLowerCase();
+    return shopifyProducts.filter((sp) => sp.node.title.toLowerCase().includes(needle));
+  }, [shopifyProducts, speciesName]);
+
+  useEffect(() => {
+    if (matches.length > 0 && !matches.some((m) => m.node.id === selectedId)) {
+      setSelectedId(matches[0].node.id);
+    }
+  }, [matches, selectedId]);
+
+  const selected = matches.find((m) => m.node.id === selectedId);
+  const selectedVariant = selected?.node.variants.edges[0]?.node;
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Find the matching Shopify product
-    const shopifyProduct = shopifyProducts?.find(
-      (sp) => sp.node.title.toLowerCase() === product.name.toLowerCase()
-    );
-
-    if (!shopifyProduct) {
+    if (!selected || !selectedVariant) {
       toast.error('Product not available for purchase yet');
       return;
     }
 
-    const variant = shopifyProduct.node.variants.edges[0]?.node;
-    if (!variant) {
-      toast.error('No variant available');
-      return;
-    }
-
     await addItem({
-      product: shopifyProduct,
-      variantId: variant.id,
-      variantTitle: variant.title,
-      price: variant.price,
+      product: selected,
+      variantId: selectedVariant.id,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price,
       quantity: 1,
-      selectedOptions: variant.selectedOptions || [],
-      customAttributes: [{ key: 'Cut Style', value: getCutStyleLabel(cutStyle) }],
+      selectedOptions: selectedVariant.selectedOptions || [],
+      customAttributes: [],
     });
 
-    toast.success(`${product.name} (${getCutStyleLabel(cutStyle)}) added to cart`, {
+    toast.success(`${selected.node.title} added to cart`, {
       position: 'top-center',
     });
   };
@@ -126,9 +138,25 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                   Call for Pricing
                 </Button>
               </div>
+            ) : matches.length === 0 ? (
+              /* No matching real Shopify product yet */
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Not available for online ordering yet — call to check stock.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => { window.location.href = 'tel:+16467509232'; }}
+                >
+                  <Phone className="w-4 h-4 mr-1" />
+                  Call (646) 750-9232
+                </Button>
+              </div>
             ) : (
               <>
-                {/* Cut Style */}
+                {/* Cut Style — the real Shopify products for this species */}
                 <div
                   className="mb-3"
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
@@ -136,14 +164,14 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
                     Cut Style
                   </label>
-                  <Select value={cutStyle} onValueChange={setCutStyle}>
+                  <Select value={selectedId} onValueChange={setSelectedId}>
                     <SelectTrigger className="h-9 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {CUT_STYLES.map((style) => (
-                        <SelectItem key={style.value} value={style.value}>
-                          {style.label} — {style.description}
+                      {matches.map((sp) => (
+                        <SelectItem key={sp.node.id} value={sp.node.id}>
+                          {sp.node.title}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -154,7 +182,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                 <div className="flex items-end justify-between gap-2">
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-bold text-primary">
-                      ${product.price.toFixed(2)}
+                      ${selectedVariant ? parseFloat(selectedVariant.price.amount).toFixed(2) : '—'}
                     </span>
                     <span className="text-sm text-muted-foreground">
                       / lb
@@ -163,7 +191,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                   <Button
                     size="sm"
                     onClick={handleAddToCart}
-                    disabled={isLoading}
+                    disabled={isLoading || !selectedVariant}
                     className="flex-shrink-0"
                   >
                     {isLoading ? (
