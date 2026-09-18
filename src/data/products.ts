@@ -16,6 +16,7 @@ import tilapiaWholeAsset from '@/assets/fish-whole-tilapia-real.jpg';
 import graySoleWholeAsset from '@/assets/fish-whole-gray-sole-real.jpg';
 import blackSeabassWholeAsset from '@/assets/fish-whole-black-seabass-real.jpg';
 import stripedBassWholeAsset from '@/assets/fish-whole-striped-bass-real.jpg';
+import chileanSeaBassAsset from '@/assets/fish-chilean-sea-bass-real.webp';
 
 export interface Product {
   id: number;
@@ -55,6 +56,7 @@ export const products: Product[] = [
   { id: 19, name: 'Scottish Salmon', species: 'salmon', origin: 'Scotland', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: salmonWholeAsset },
   { id: 20, name: 'Faroe Island Salmon', species: 'salmon', origin: 'Faroe Islands', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: salmonWholeAsset },
   { id: 21, name: 'King Salmon', species: 'salmon', origin: 'Alaska', price: 0, weight: 'Varies', type: 'Whole Fish', rating: 5, image: salmonWholeAsset, callForPrice: true },
+  { id: 22, name: 'Chilean Sea Bass', species: 'chilean-sea-bass', origin: 'Chile', price: 0, weight: 'Varies', type: 'Whole Fish', rating: 5, image: chileanSeaBassAsset, callForPrice: true },
 ];
 
 // Species info for pages
@@ -173,6 +175,12 @@ export const speciesInfo: Record<string, SpeciesInfo> = {
     name: 'Striped Bass',
     description: 'Wild-caught striped bass from Atlantic coastal waters. Known for its firm, moist white flesh and mild, clean flavor — a favorite for whole grilling and roasting.',
     heroImage: stripedBassWholeAsset,
+  },
+  'chilean-sea-bass': {
+    slug: 'chilean-sea-bass',
+    name: 'Chilean Sea Bass',
+    description: 'Premium Chilean sea bass, prized for its rich, buttery flavor and large, moist flakes. A special order item — call for current pricing and availability.',
+    heroImage: chileanSeaBassAsset,
   },
 };
 

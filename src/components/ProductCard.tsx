@@ -117,12 +117,14 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                 <p className="text-sm text-muted-foreground mb-3">
                   Special order — price varies by size and availability.
                 </p>
-                <a href="tel:+16467509232" className="block">
-                  <Button size="sm" className="w-full">
-                    <Phone className="w-4 h-4 mr-1" />
-                    Call for Pricing
-                  </Button>
-                </a>
+                <Button
+                  size="sm"
+                  className="w-full"
+                  onClick={() => { window.location.href = 'tel:+16467509232'; }}
+                >
+                  <Phone className="w-4 h-4 mr-1" />
+                  Call for Pricing
+                </Button>
               </div>
             ) : (
               <>
