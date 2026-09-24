@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Loader2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product, speciesInfo } from '@/data/products';
+import { CUT_STYLES, DEFAULT_CUT_STYLE, getCutStyleLabel } from '@/data/cutStyles';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCartStore } from '@/stores/cartStore';
@@ -25,6 +26,7 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
   const [selectedId, setSelectedId] = useState<string>('');
+  const [cutStyle, setCutStyle] = useState(DEFAULT_CUT_STYLE);
 
   // Fetch the real Shopify catalog
   const { data: shopifyProducts } = useQuery({
@@ -39,7 +41,10 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
   const matches: ShopifyProduct[] = useMemo(() => {
     if (!shopifyProducts) return [];
     const needle = speciesName.toLowerCase();
-    return shopifyProducts.filter((sp) => sp.node.title.toLowerCase().includes(needle));
+    const forSpecies = shopifyProducts.filter((sp) => sp.node.title.toLowerCase().includes(needle));
+    // Sold as whole fish; the customer picks how it's cut below.
+    const whole = forSpecies.filter((sp) => /whole/i.test(sp.node.title));
+    return whole.length > 0 ? whole : forSpecies;
   }, [shopifyProducts, speciesName]);
 
   useEffect(() => {
@@ -67,10 +72,10 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       price: selectedVariant.price,
       quantity: 1,
       selectedOptions: selectedVariant.selectedOptions || [],
-      customAttributes: [],
+      customAttributes: [{ key: 'Cut Style', value: getCutStyleLabel(cutStyle) }],
     });
 
-    toast.success(`${selected.node.title} added to cart`, {
+    toast.success(`${selected.node.title} (${getCutStyleLabel(cutStyle)}) added to cart`, {
       position: 'top-center',
     });
   };
@@ -156,26 +161,47 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
               </div>
             ) : (
               <>
-                {/* Cut Style — the real Shopify products for this species */}
                 <div
-                  className="mb-3"
+                  className="mb-3 space-y-3"
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                 >
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
-                    Cut Style
-                  </label>
-                  <Select value={selectedId} onValueChange={setSelectedId}>
-                    <SelectTrigger className="h-9 text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {matches.map((sp) => (
-                        <SelectItem key={sp.node.id} value={sp.node.id}>
-                          {sp.node.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {/* Only shown when a species has more than one whole-fish product (e.g. origins) */}
+                  {matches.length > 1 && (
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
+                        Option
+                      </label>
+                      <Select value={selectedId} onValueChange={setSelectedId}>
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {matches.map((sp) => (
+                            <SelectItem key={sp.node.id} value={sp.node.id}>
+                              {sp.node.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">
+                      Cut Style
+                    </label>
+                    <Select value={cutStyle} onValueChange={setCutStyle}>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CUT_STYLES.map((style) => (
+                          <SelectItem key={style.value} value={style.value}>
+                            {style.label} — {style.description}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Price & Add to Cart */}
