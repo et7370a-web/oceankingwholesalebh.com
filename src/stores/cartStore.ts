@@ -30,11 +30,13 @@ interface CartStore {
   items: CartItem[];
   cartId: string | null;
   checkoutUrl: string | null;
+  deliveryDate: string | null;
   isLoading: boolean;
   isSyncing: boolean;
   addItem: (item: Omit<CartItem, 'lineId'>) => Promise<void>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
+  setDeliveryDate: (date: string) => Promise<void>;
   clearCart: () => void;
   syncCart: () => Promise<void>;
   getCheckoutUrl: () => string | null;
@@ -84,6 +86,15 @@ const CART_LINES_REMOVE_MUTATION = `
   }
 `;
 
+const CART_ATTRIBUTES_UPDATE_MUTATION = `
+  mutation cartAttributesUpdate($cartId: ID!, $attributes: [AttributeInput!]!) {
+    cartAttributesUpdate(cartId: $cartId, attributes: $attributes) {
+      cart { id }
+      userErrors { field message }
+    }
+  }
+`;
+
 function formatCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl);
@@ -98,9 +109,12 @@ function isCartNotFoundError(userErrors: Array<{ field: string[] | null; message
   return userErrors.some(e => e.message.toLowerCase().includes('cart not found') || e.message.toLowerCase().includes('does not exist'));
 }
 
-async function createShopifyCart(item: CartItem): Promise<{ cartId: string; checkoutUrl: string; lineId: string } | null> {
+async function createShopifyCart(item: CartItem, deliveryDate: string | null): Promise<{ cartId: string; checkoutUrl: string; lineId: string } | null> {
   const data = await storefrontApiRequest(CART_CREATE_MUTATION, {
-    input: { lines: [{ quantity: item.quantity, merchandiseId: item.variantId, attributes: item.customAttributes }] },
+    input: {
+      lines: [{ quantity: item.quantity, merchandiseId: item.variantId, attributes: item.customAttributes }],
+      attributes: deliveryDate ? [{ key: 'Requested Delivery Date', value: deliveryDate }] : [],
+    },
   });
   if (data?.data?.cartCreate?.userErrors?.length > 0) return null;
   const cart = data?.data?.cartCreate?.cart;
@@ -141,22 +155,34 @@ async function removeLineFromShopifyCart(cartId: string, lineId: string): Promis
   return { success: true };
 }
 
+async function updateShopifyCartAttributes(cartId: string, date: string): Promise<{ success: boolean; cartNotFound?: boolean }> {
+  const data = await storefrontApiRequest(CART_ATTRIBUTES_UPDATE_MUTATION, {
+    cartId,
+    attributes: [{ key: 'Requested Delivery Date', value: date }],
+  });
+  const userErrors = data?.data?.cartAttributesUpdate?.userErrors || [];
+  if (isCartNotFoundError(userErrors)) return { success: false, cartNotFound: true };
+  if (userErrors.length > 0) return { success: false };
+  return { success: true };
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
       cartId: null,
       checkoutUrl: null,
+      deliveryDate: null,
       isLoading: false,
       isSyncing: false,
 
       addItem: async (item) => {
-        const { items, cartId, clearCart } = get();
+        const { items, cartId, deliveryDate, clearCart } = get();
         const existingItem = items.find(i => sameLine(i, item));
         set({ isLoading: true });
         try {
           if (!cartId) {
-            const result = await createShopifyCart({ ...item, lineId: null });
+            const result = await createShopifyCart({ ...item, lineId: null }, deliveryDate);
             if (result) {
               set({ cartId: result.cartId, checkoutUrl: result.checkoutUrl, items: [{ ...item, lineId: result.lineId }] });
             }
@@ -216,6 +242,21 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
+      setDeliveryDate: async (date) => {
+        const { cartId, clearCart } = get();
+        set({ deliveryDate: date });
+        if (!cartId) return; // no cart yet — will be applied when the cart is created
+        set({ isLoading: true });
+        try {
+          const result = await updateShopifyCartAttributes(cartId, date);
+          if (result.cartNotFound) clearCart();
+        } catch (error) {
+          console.error('Failed to set delivery date:', error);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
       clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
       getCheckoutUrl: () => get().checkoutUrl,
 
@@ -238,7 +279,7 @@ export const useCartStore = create<CartStore>()(
     {
       name: 'shopify-cart',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items, cartId: state.cartId, checkoutUrl: state.checkoutUrl }),
+      partialize: (state) => ({ items: state.items, cartId: state.cartId, checkoutUrl: state.checkoutUrl, deliveryDate: state.deliveryDate }),
     }
   )
 );

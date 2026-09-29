@@ -2,8 +2,16 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from 'lucide-react';
+import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2, Calendar } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
+import {
+  earliestDeliveryDateISO,
+  latestDeliveryDateISO,
+  isValidDeliveryDate,
+  nearestValidDeliveryDate,
+  formatDeliveryDate,
+} from '@/lib/deliveryDate';
+import { toast } from 'sonner';
 
 const isOrderingBlocked = () => {
   const now = new Date();
@@ -17,12 +25,30 @@ const isOrderingBlocked = () => {
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, isLoading, isSyncing, deliveryDate, updateQuantity, removeItem, setDeliveryDate, getCheckoutUrl, syncCart } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
   const orderBlocked = isOrderingBlocked();
+  const effectiveDeliveryDate = deliveryDate && isValidDeliveryDate(deliveryDate) ? deliveryDate : earliestDeliveryDateISO();
 
   useEffect(() => { if (isOpen) syncCart(); }, [isOpen, syncCart]);
+
+  // Make sure a delivery date is always attached to the order, even if the
+  // customer never touches the picker.
+  useEffect(() => {
+    if (items.length > 0 && !deliveryDate) setDeliveryDate(earliestDeliveryDateISO());
+  }, [items.length, deliveryDate, setDeliveryDate]);
+
+  const handleDeliveryDateChange = (value: string) => {
+    if (!value) return;
+    if (!isValidDeliveryDate(value)) {
+      const corrected = nearestValidDeliveryDate(value);
+      toast.info('We only deliver Monday–Friday — moved to the nearest available day.');
+      setDeliveryDate(corrected);
+      return;
+    }
+    setDeliveryDate(value);
+  };
 
   const handleCheckout = () => {
     const checkoutUrl = getCheckoutUrl();
@@ -98,6 +124,24 @@ export const CartDrawer = () => {
                 </div>
               </div>
               <div className="flex-shrink-0 space-y-4 pt-4 border-t bg-background">
+                <div>
+                  <label htmlFor="delivery-date" className="text-sm font-semibold text-foreground flex items-center gap-2 mb-2">
+                    <Calendar className="w-4 h-4 text-primary" />
+                    Delivery date
+                  </label>
+                  <input
+                    id="delivery-date"
+                    type="date"
+                    value={effectiveDeliveryDate}
+                    min={earliestDeliveryDateISO()}
+                    max={latestDeliveryDateISO()}
+                    onChange={(e) => handleDeliveryDateChange(e.target.value)}
+                    className="w-full rounded-lg border-2 border-border px-3 py-2 text-sm bg-background text-foreground"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {formatDeliveryDate(effectiveDeliveryDate)} · We deliver Monday–Friday
+                  </p>
+                </div>
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-foreground">Total</span>
                   <span className="text-xl font-bold text-primary">${totalPrice.toFixed(2)}</span>
