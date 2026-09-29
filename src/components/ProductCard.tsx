@@ -206,13 +206,16 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
 
                 {/* Price & Add to Cart */}
                 <div className="flex items-end justify-between gap-2">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-primary">
-                      ${selectedVariant ? parseFloat(selectedVariant.price.amount).toFixed(2) : '—'}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      / lb
-                    </span>
+                  <div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-2xl font-bold text-primary">
+                        ${selectedVariant ? parseFloat(selectedVariant.price.amount).toFixed(2) : '—'}
+                      </span>
+                      <span className="text-sm font-semibold text-foreground">
+                        per lb
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Sold in 1 lb units</p>
                   </div>
                   <Button
                     size="sm"

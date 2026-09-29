@@ -184,7 +184,7 @@ const ProductDetail = () => {
                       <span className="font-display text-3xl sm:text-4xl font-bold text-primary">
                         ${product.price.toFixed(2)}
                       </span>
-                      <span className="text-muted-foreground">/ lb</span>
+                      <span className="text-base font-semibold text-foreground">per lb</span>
                     </div>
                     <p className="text-xs text-muted-foreground mb-4">Sold in 1 lb units</p>
 

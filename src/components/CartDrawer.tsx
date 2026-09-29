@@ -102,7 +102,7 @@ export const CartDrawer = () => {
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-sm truncate text-foreground">{item.product.node.title}</h4>
                           {cutStyle && <p className="text-xs text-muted-foreground truncate">{cutStyle}</p>}
-                          <p className="text-sm font-semibold text-primary">${parseFloat(item.price.amount).toFixed(2)} / lb</p>
+                          <p className="text-sm font-semibold text-primary">${parseFloat(item.price.amount).toFixed(2)} per lb</p>
                         </div>
                         <div className="flex flex-col items-end gap-2 flex-shrink-0">
                           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => item.lineId && removeItem(item.lineId)} aria-label={`Remove ${item.product.node.title}`}>
