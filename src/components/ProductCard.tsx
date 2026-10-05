@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Star, ShoppingCart, Loader2, Phone } from 'lucide-react';
+import { Star, ShoppingCart, Loader2, Phone, Minus, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product, speciesInfo } from '@/data/products';
 import { CUT_STYLES, DEFAULT_CUT_STYLE, getCutStyleLabel } from '@/data/cutStyles';
@@ -22,11 +22,16 @@ const SPECIES_SHOPIFY_ALIAS: Record<string, string> = {
   buffalo: 'Buffalo',
 };
 
+const MAX_POUNDS = 100;
+
 const ProductCard = ({ product, index }: ProductCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
   const [selectedId, setSelectedId] = useState<string>('');
   const [cutStyle, setCutStyle] = useState(DEFAULT_CUT_STYLE);
+  const [poundsInput, setPoundsInput] = useState<number | ''>(5);
+  const clampPounds = (n: number) => Math.min(MAX_POUNDS, Math.max(1, Math.floor(n) || 1));
+  const pounds = poundsInput === '' ? 1 : poundsInput;
 
   // Fetch the real Shopify catalog
   const { data: shopifyProducts } = useQuery({
@@ -70,12 +75,12 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
-      quantity: 1,
+      quantity: pounds,
       selectedOptions: selectedVariant.selectedOptions || [],
       customAttributes: [{ key: 'Cut Style', value: getCutStyleLabel(cutStyle) }],
     });
 
-    toast.success(`${selected.node.title} (${getCutStyleLabel(cutStyle)}) added to cart`, {
+    toast.success(`${pounds} lb ${selected.node.title} (${getCutStyleLabel(cutStyle)}) added to cart`, {
       position: 'top-center',
     });
   };
@@ -201,6 +206,50 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                         ))}
                       </SelectContent>
                     </Select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor={`pounds-${product.id}`}
+                      className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block"
+                    >
+                      How many pounds?
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => setPoundsInput(clampPounds(pounds - 1))}
+                        disabled={pounds <= 1}
+                        aria-label="Decrease pounds"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </Button>
+                      <input
+                        id={`pounds-${product.id}`}
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        max={MAX_POUNDS}
+                        value={poundsInput}
+                        onChange={(e) => setPoundsInput(e.target.value === '' ? '' : clampPounds(Number(e.target.value)))}
+                        onBlur={() => setPoundsInput(pounds)}
+                        className="h-9 w-16 rounded-md border border-input bg-background text-center text-sm font-semibold"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => setPoundsInput(clampPounds(pounds + 1))}
+                        disabled={pounds >= MAX_POUNDS}
+                        aria-label="Increase pounds"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                      <span className="text-sm text-muted-foreground">lb</span>
+                    </div>
                   </div>
                 </div>
 
