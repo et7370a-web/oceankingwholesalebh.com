@@ -23,11 +23,23 @@ const isOrderingBlocked = () => {
   return false;
 };
 
+const isMembership = (title: string) => /membership/i.test(title);
+
+const priceUnit = (title: string) => {
+  if (!isMembership(title)) return 'per lb';
+  return /annual/i.test(title) ? 'per year' : 'per month';
+};
+
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { items, isLoading, isSyncing, deliveryDate, updateQuantity, removeItem, setDeliveryDate, getCheckoutUrl, syncCart } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
+  const poundsInCart = items
+    .filter((item) => !isMembership(item.product.node.title))
+    .reduce((sum, item) => sum + item.quantity, 0);
+  // The 5 lb minimum applies to fish only; a membership-only cart can check out.
+  const belowMinimum = poundsInCart > 0 && poundsInCart < 5;
   const orderBlocked = isOrderingBlocked();
   const effectiveDeliveryDate = deliveryDate && isValidDeliveryDate(deliveryDate) ? deliveryDate : earliestDeliveryDateISO();
 
@@ -102,7 +114,7 @@ export const CartDrawer = () => {
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-sm truncate text-foreground">{item.product.node.title}</h4>
                           {cutStyle && <p className="text-xs text-muted-foreground truncate">{cutStyle}</p>}
-                          <p className="text-sm font-semibold text-primary">${parseFloat(item.price.amount).toFixed(2)} per lb</p>
+                          <p className="text-sm font-semibold text-primary">${parseFloat(item.price.amount).toFixed(2)} {priceUnit(item.product.node.title)}</p>
                         </div>
                         <div className="flex flex-col items-end gap-2 flex-shrink-0">
                           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => item.lineId && removeItem(item.lineId)} aria-label={`Remove ${item.product.node.title}`}>
@@ -149,10 +161,10 @@ export const CartDrawer = () => {
                 {orderBlocked && (
                   <p className="text-sm text-destructive text-center font-medium">Orders are closed from Friday 3:00 PM to Saturday 8:00 PM</p>
                 )}
-                {!orderBlocked && totalItems < 5 && (
-                  <p className="text-sm text-destructive text-center">Minimum order: 5 items ({5 - totalItems} more needed)</p>
+                {!orderBlocked && belowMinimum && (
+                  <p className="text-sm text-destructive text-center">Minimum order: 5 lbs of fish ({5 - poundsInCart} more needed)</p>
                 )}
-                <Button onClick={handleCheckout} className="w-full" size="lg" disabled={orderBlocked || totalItems < 5 || isLoading || isSyncing}>
+                <Button onClick={handleCheckout} className="w-full" size="lg" disabled={orderBlocked || belowMinimum || isLoading || isSyncing}>
                   {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" />Checkout with Shopify</>}
                 </Button>
                 <div className="rounded-2xl border-2 border-secondary bg-secondary/10 p-4 text-center">

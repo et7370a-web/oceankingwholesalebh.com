@@ -69,6 +69,10 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
       toast.error('Product not available for purchase yet');
       return;
     }
+    if (!selectedVariant.availableForSale) {
+      toast.error(`${selected.node.title} is currently sold out — call (646) 750-9232`);
+      return;
+    }
 
     await addItem({
       product: selected,
@@ -269,11 +273,13 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
                   <Button
                     size="sm"
                     onClick={handleAddToCart}
-                    disabled={isLoading || !selectedVariant}
+                    disabled={isLoading || !selectedVariant || !selectedVariant.availableForSale}
                     className="flex-shrink-0"
                   >
                     {isLoading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : selectedVariant && !selectedVariant.availableForSale ? (
+                      'Sold out'
                     ) : (
                       <>
                         <ShoppingCart className="w-4 h-4 mr-1" />
