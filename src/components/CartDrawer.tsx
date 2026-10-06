@@ -26,8 +26,7 @@ const isOrderingBlocked = () => {
 const isMembership = (title: string) => /membership/i.test(title);
 
 const priceUnit = (title: string) => {
-  if (!isMembership(title)) return 'per lb';
-  return /annual/i.test(title) ? 'per year' : 'per month';
+  return isMembership(title) ? 'per year' : 'per lb';
 };
 
 export const CartDrawer = () => {

@@ -79,12 +79,12 @@ const MembershipSection = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Pay once for the year or monthly — either way, you get free delivery and 
+              One yearly payment gets you free delivery and
               wholesale pricing on every whole fish order.
             </motion.p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="max-w-md mx-auto">
             {/* Annual plan */}
             <motion.div
               className="relative bg-card rounded-3xl p-8 border-2 border-border/50 shadow-ocean flex flex-col"
@@ -122,44 +122,6 @@ const MembershipSection = () => {
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
                 Add Annual Membership
-              </Button>
-            </motion.div>
-
-            {/* Monthly plan */}
-            <motion.div
-              className="bg-card rounded-3xl p-8 border border-border/50 shadow-ocean flex flex-col"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="mb-6">
-                <h3 className="font-display text-2xl font-bold text-foreground">Monthly Membership</h3>
-                <div className="flex items-baseline gap-2 mt-2">
-                  <span className="font-display text-5xl font-black text-primary">$3</span>
-                  <span className="text-muted-foreground">/ month</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">Billed monthly. Cancel anytime.</p>
-              </div>
-
-              <ul className="space-y-4 mb-8 flex-1">
-                {perks.map((perk, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <perk.icon className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground">{perk.text}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full"
-                onClick={() => handleAddMembership('Monthly Membership')}
-                disabled={isLoading}
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Add Monthly Membership
               </Button>
             </motion.div>
           </div>

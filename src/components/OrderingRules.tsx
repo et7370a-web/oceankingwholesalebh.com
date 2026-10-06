@@ -66,7 +66,7 @@ const OrderingRules = () => {
               Membership
             </p>
             <h3 className="font-display text-4xl md:text-6xl font-extrabold text-primary mb-4 leading-none">
-              $3/mo or $36/yr
+              $36/yr
             </h3>
             <a
               href="tel:+16467509232"
