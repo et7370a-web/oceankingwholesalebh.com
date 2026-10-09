@@ -63,7 +63,7 @@ const OrderingRules = () => {
             viewport={{ once: true }}
           >
             <p className="text-sm md:text-base uppercase tracking-[0.3em] text-secondary font-bold mb-3">
-              Special Requests
+              Questions? Call Us
             </p>
             <a
               href="tel:+16467509232"
@@ -72,7 +72,7 @@ const OrderingRules = () => {
               (646) 750-9232
             </a>
             <p className="text-base md:text-lg text-foreground max-w-2xl mx-auto">
-              Call for special requests.
+              Need a custom cut, a bigger order, or a fish you don't see here? Give us a call.
             </p>
           </motion.div>
         </div>
