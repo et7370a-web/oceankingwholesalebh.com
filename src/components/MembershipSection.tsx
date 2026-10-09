@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 const perks = [
   { icon: Truck, text: 'Free shipping on every order' },
-  { icon: Tags, text: '$9.99/lb on whole fish (5 lb minimum)' },
+  { icon: Tags, text: '$9.99/lb on most fish* (5 lb minimum)' },
   { icon: Crown, text: 'Members-only deals and early access' },
 ];
 
@@ -133,6 +133,8 @@ const MembershipSection = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
           >
+            *Exceptions apply, e.g. Chilean sea bass and king salmon.
+            <br />
             Memberships are added to your cart like any other item. Checkout securely with Shopify.
           </motion.p>
         </div>
