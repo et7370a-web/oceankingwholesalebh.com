@@ -134,8 +134,6 @@ const MembershipSection = () => {
             viewport={{ once: true }}
           >
             *Exceptions apply, e.g. Chilean sea bass and king salmon.
-            <br />
-            Memberships are added to your cart like any other item. Checkout securely with Shopify.
           </motion.p>
         </div>
       </div>
