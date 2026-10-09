@@ -78,9 +78,6 @@ const OrderingRules = () => {
               Call for special requests, or join to unlock <strong>free shipping</strong> and <strong>$9.99/lb wholesale pricing</strong> on most fish.*
               <span className="block text-sm text-muted-foreground mt-1">*Exceptions apply, e.g. Chilean sea bass and king salmon.</span>
             </p>
-            <p className="mt-4 inline-block bg-secondary text-secondary-foreground px-6 py-3 rounded-full font-bold text-base md:text-lg">
-              Cancel anytime
-            </p>
           </motion.div>
         </div>
       </div>
