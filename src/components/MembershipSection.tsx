@@ -80,7 +80,7 @@ const MembershipSection = () => {
               viewport={{ once: true }}
             >
               One yearly payment gets you free delivery and
-              wholesale pricing on every whole fish order.
+              wholesale pricing on every fish order.
             </motion.p>
           </div>
 
