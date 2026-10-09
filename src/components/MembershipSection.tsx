@@ -134,6 +134,12 @@ const MembershipSection = () => {
             viewport={{ once: true }}
           >
             *Exceptions apply, e.g. Chilean sea bass and king salmon.
+            <br />
+            Prefer to join by phone? Call{' '}
+            <a href="tel:+16467509232" className="font-semibold text-foreground hover:text-secondary transition-colors">
+              (646) 750-9232
+            </a>
+            .
           </motion.p>
         </div>
       </div>

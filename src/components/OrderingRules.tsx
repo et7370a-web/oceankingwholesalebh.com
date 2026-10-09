@@ -63,11 +63,8 @@ const OrderingRules = () => {
             viewport={{ once: true }}
           >
             <p className="text-sm md:text-base uppercase tracking-[0.3em] text-secondary font-bold mb-3">
-              Membership
+              Special Requests
             </p>
-            <h3 className="font-display text-4xl md:text-6xl font-extrabold text-primary mb-4 leading-none">
-              $36/yr
-            </h3>
             <a
               href="tel:+16467509232"
               className="block font-display text-5xl md:text-7xl font-black text-foreground tracking-tight mb-6 hover:text-secondary transition-colors"
@@ -75,8 +72,7 @@ const OrderingRules = () => {
               (646) 750-9232
             </a>
             <p className="text-base md:text-lg text-foreground max-w-2xl mx-auto">
-              Call for special requests, or join to unlock <strong>free shipping</strong> and <strong>$9.99/lb wholesale pricing</strong> on most fish.*
-              <span className="block text-sm text-muted-foreground mt-1">*Exceptions apply, e.g. Chilean sea bass and king salmon.</span>
+              Call for special requests.
             </p>
           </motion.div>
         </div>
