@@ -20,6 +20,7 @@ interface ProductCardProps {
 // (e.g. we call it "Buffalo Fish", Shopify lists it as "Buffalo Fillet" / "Buffalo Whole").
 const SPECIES_SHOPIFY_ALIAS: Record<string, string> = {
   buffalo: 'Buffalo',
+  dorado: 'Dorado',
 };
 
 const MAX_POUNDS = 100;

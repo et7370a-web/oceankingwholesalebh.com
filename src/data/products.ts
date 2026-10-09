@@ -48,7 +48,7 @@ export const products: Product[] = [
   { id: 11, name: 'Mullet', species: 'mullet', origin: 'USA', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: mulletWholeAsset },
   { id: 12, name: 'Buffalo Fish', species: 'buffalo', origin: 'Mississippi River', price: WHOLE_PRICE, weight: '10-12lb', type: 'Whole Fish Clean', rating: 5, image: buffaloWholeAsset },
   { id: 13, name: 'Carp', species: 'carp', origin: 'Mississippi River', price: WHOLE_PRICE, weight: '10-12lb', type: 'Whole Fish Clean', rating: 5, image: carpWholeAsset },
-  { id: 14, name: 'Dorado', species: 'dorado', origin: 'USA', price: WHOLE_PRICE, weight: '5-8lb', type: 'Whole Fish Clean', rating: 5, image: doradoWholeAsset },
+  { id: 14, name: 'Dorade', species: 'dorado', origin: 'USA', price: WHOLE_PRICE, weight: '5-8lb', type: 'Whole Fish Clean', rating: 5, image: doradoWholeAsset },
   { id: 15, name: 'Tilapia', species: 'tilapia', origin: 'USA', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: tilapiaWholeAsset },
   { id: 16, name: 'Gray Sole', species: 'gray-sole', origin: 'USA', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: graySoleWholeAsset },
   { id: 17, name: 'Black Seabass', species: 'black-seabass', origin: 'USA', price: WHOLE_PRICE, weight: '5lb', type: 'Whole Fish', rating: 5, image: blackSeabassWholeAsset },
@@ -148,8 +148,8 @@ export const speciesInfo: Record<string, SpeciesInfo> = {
   },
   dorado: {
     slug: 'dorado',
-    name: 'Dorado',
-    description: 'Wild-caught dorado, also known as mahi-mahi, from warm Atlantic waters. Prized for its firm, lean flesh and mild, slightly sweet flavor that grills beautifully.',
+    name: 'Dorade',
+    description: 'Wild-caught dorade, also known as mahi-mahi, from warm Atlantic waters. Prized for its firm, lean flesh and mild, slightly sweet flavor that grills beautifully.',
     heroImage: doradoWholeAsset,
   },
   tilapia: {
