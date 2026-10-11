@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, Fish } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CartDrawer } from '@/components/CartDrawer';
+import { MemberButton } from '@/components/MemberButton';
 
 const navLinks = [
   { name: 'Home', href: '#' },
@@ -73,6 +74,7 @@ const Header = () => {
               <Button variant="ghost" size="icon" className="hover:bg-ocean-surface/50" aria-label="Search">
                 <Search className="w-5 h-5" />
               </Button>
+              <MemberButton />
               <CartDrawer />
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6">
                 Shop Now
@@ -81,6 +83,7 @@ const Header = () => {
 
             {/* Mobile Menu Button */}
             <div className="flex items-center gap-2 lg:hidden">
+              <MemberButton />
               <CartDrawer />
               <button
                 className="p-2"

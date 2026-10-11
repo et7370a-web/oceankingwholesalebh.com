@@ -4,6 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2, Calendar } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
+import { useMemberStore } from '@/stores/memberStore';
+import { startLogin } from '@/lib/customerAuth';
+import { createMembershipCheckoutUrl } from '@/lib/shopify';
 import {
   earliestDeliveryDateISO,
   latestDeliveryDateISO,
@@ -31,6 +34,8 @@ const priceUnit = (title: string) => {
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const { status: memberStatus, isMember } = useMemberStore();
   const { items, isLoading, isSyncing, deliveryDate, updateQuantity, removeItem, setDeliveryDate, getCheckoutUrl, syncCart } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
@@ -59,6 +64,21 @@ export const CartDrawer = () => {
       return;
     }
     setDeliveryDate(value);
+  };
+
+  const handleJoin = async () => {
+    setJoining(true);
+    try {
+      const url = await createMembershipCheckoutUrl();
+      if (url) {
+        window.location.href = url;
+        return;
+      }
+    } catch {
+      /* fall through to the error toast */
+    }
+    toast.error('Could not start membership checkout. Please call (646) 750-9232.');
+    setJoining(false);
   };
 
   const handleCheckout = () => {
@@ -163,9 +183,38 @@ export const CartDrawer = () => {
                 {!orderBlocked && belowMinimum && (
                   <p className="text-sm text-destructive text-center">Minimum order: 5 lbs of fish ({5 - poundsInCart} more needed)</p>
                 )}
-                <Button onClick={handleCheckout} className="w-full" size="lg" disabled={orderBlocked || belowMinimum || isLoading || isSyncing}>
+                {!isMember && (
+                  <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 text-center space-y-3">
+                    {memberStatus === 'loading' ? (
+                      <p className="text-sm text-muted-foreground">Checking your membership…</p>
+                    ) : (
+                      <>
+                        <p className="font-semibold text-foreground">Ordering is for members</p>
+                        <p className="text-sm text-muted-foreground">
+                          {memberStatus === 'signedIn'
+                            ? "This account doesn't have an active membership yet."
+                            : memberStatus === 'error'
+                              ? "We couldn't check your membership. Please refresh and try again."
+                              : 'Already a member? Sign in. New here? Join for $36/year.'}
+                        </p>
+                        <div className="flex gap-2">
+                          {memberStatus !== 'signedIn' && (
+                            <Button variant="outline" className="flex-1" onClick={() => startLogin(window.location.pathname)}>
+                              Sign in
+                            </Button>
+                          )}
+                          <Button className="flex-1" onClick={handleJoin} disabled={joining}>
+                            {joining ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Join — $36/yr'}
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+                <Button onClick={handleCheckout} className="w-full" size="lg" disabled={!isMember || orderBlocked || belowMinimum || isLoading || isSyncing}>
                   {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" />Checkout with Shopify</>}
                 </Button>
+                {isMember && (
                 <div className="rounded-2xl border-2 border-secondary bg-secondary/10 p-4 text-center">
                   <p className="text-xs uppercase tracking-widest text-secondary font-bold mb-2">Pay With</p>
                   <p className="font-display text-2xl font-extrabold text-primary leading-tight">Zelle &amp; Venmo</p>
@@ -177,6 +226,7 @@ export const CartDrawer = () => {
                     Delivery within 24 hours of payment.
                   </p>
                 </div>
+                )}
               </div>
             </>
           )}
