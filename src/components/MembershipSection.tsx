@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 const perks = [
   { icon: Truck, text: 'Free shipping on every order' },
-  { icon: Tags, text: '$9.99/lb on most fish* (5 lb minimum)' },
+  { icon: Tags, text: '$9.99/lb on most fish* (5 lb minimum per order)' },
   { icon: Crown, text: 'Members-only deals and early access' },
 ];
 
@@ -93,9 +93,6 @@ const MembershipSection = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
-                Best Value
-              </div>
               <div className="mb-6">
                 <h3 className="font-display text-2xl font-bold text-foreground">Annual Membership</h3>
                 <div className="flex items-baseline gap-2 mt-2">
