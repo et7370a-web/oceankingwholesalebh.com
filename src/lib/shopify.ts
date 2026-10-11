@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 const SHOPIFY_API_VERSION = '2025-07';
 const SHOPIFY_STORE_PERMANENT_DOMAIN = 'oceanfishmarketbh-lbrgl.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-const SHOPIFY_STOREFRONT_TOKEN = '88ed02921ef51479efbfa6a7d20b448e';
+const SHOPIFY_STOREFRONT_TOKEN = '0af559104462b2b4731c657336109e6e';
 
 export interface ShopifyProduct {
   node: {
@@ -133,9 +133,6 @@ export async function fetchShopifyProducts(first = 50, query?: string): Promise<
   return data?.data?.products?.edges || [];
 }
 
-// Subscription products can't be sold through the main storefront channel, so
-// membership signups use the separate Headless channel's public token.
-const MEMBERSHIP_STOREFRONT_TOKEN = '0af559104462b2b4731c657336109e6e';
 const ANNUAL_MEMBERSHIP_VARIANT_ID = 'gid://shopify/ProductVariant/47768065081428';
 const ANNUAL_MEMBERSHIP_SELLING_PLAN_ID = 'gid://shopify/SellingPlan/1893531732';
 
@@ -144,7 +141,7 @@ export async function createMembershipCheckoutUrl(): Promise<string | null> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': MEMBERSHIP_STOREFRONT_TOKEN,
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
     },
     body: JSON.stringify({
       query: `mutation($input: CartInput!) {
