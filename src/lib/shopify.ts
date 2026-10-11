@@ -132,3 +132,36 @@ export async function fetchShopifyProducts(first = 50, query?: string): Promise<
   const data = await storefrontApiRequest(STOREFRONT_QUERY, { first, query });
   return data?.data?.products?.edges || [];
 }
+
+// Subscription products can't be sold through the main storefront channel, so
+// membership signups use the separate Headless channel's public token.
+const MEMBERSHIP_STOREFRONT_TOKEN = '0af559104462b2b4731c657336109e6e';
+const ANNUAL_MEMBERSHIP_VARIANT_ID = 'gid://shopify/ProductVariant/47768065081428';
+const ANNUAL_MEMBERSHIP_SELLING_PLAN_ID = 'gid://shopify/SellingPlan/1893531732';
+
+export async function createMembershipCheckoutUrl(): Promise<string | null> {
+  const response = await fetch(SHOPIFY_STOREFRONT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': MEMBERSHIP_STOREFRONT_TOKEN,
+    },
+    body: JSON.stringify({
+      query: `mutation($input: CartInput!) {
+        cartCreate(input: $input) { cart { checkoutUrl } userErrors { message } }
+      }`,
+      variables: {
+        input: {
+          lines: [{
+            quantity: 1,
+            merchandiseId: ANNUAL_MEMBERSHIP_VARIANT_ID,
+            sellingPlanId: ANNUAL_MEMBERSHIP_SELLING_PLAN_ID,
+          }],
+        },
+      },
+    }),
+  });
+  if (!response.ok) return null;
+  const data = await response.json();
+  return data?.data?.cartCreate?.cart?.checkoutUrl ?? null;
+}

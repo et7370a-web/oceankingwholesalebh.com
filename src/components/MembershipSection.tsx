@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
-import { Crown, Truck, Tags, Phone } from 'lucide-react';
+import { useState } from 'react';
+import { Crown, Truck, Tags, ShoppingCart, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { createMembershipCheckoutUrl } from '@/lib/shopify';
+import { toast } from 'sonner';
 
 const perks = [
   { icon: Truck, text: 'Free shipping on every order' },
@@ -9,6 +12,22 @@ const perks = [
 ];
 
 const MembershipSection = () => {
+  const [joining, setJoining] = useState(false);
+
+  const handleJoin = async () => {
+    setJoining(true);
+    try {
+      const checkoutUrl = await createMembershipCheckoutUrl();
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+        return;
+      }
+      toast.error('Could not start membership checkout. Please call (646) 750-9232.');
+    } catch {
+      toast.error('Could not start membership checkout. Please call (646) 750-9232.');
+    }
+    setJoining(false);
+  };
 
   return (
     <section className="py-24 bg-muted/30 border-y border-border/50">
@@ -72,11 +91,15 @@ const MembershipSection = () => {
                 ))}
               </ul>
 
-              <Button size="lg" className="w-full" asChild>
-                <a href="tel:+16467509232">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Call to Join: (646) 750-9232
-                </a>
+              <Button size="lg" className="w-full" onClick={handleJoin} disabled={joining}>
+                {joining ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Join Annual Membership
+                  </>
+                )}
               </Button>
             </motion.div>
           </div>
@@ -89,6 +112,12 @@ const MembershipSection = () => {
             viewport={{ once: true }}
           >
             *Exceptions apply, e.g. Chilean sea bass and king salmon.
+            <br />
+            Prefer to join by phone? Call{' '}
+            <a href="tel:+16467509232" className="font-semibold text-foreground hover:text-secondary transition-colors">
+              (646) 750-9232
+            </a>
+            .
           </motion.p>
         </div>
       </div>
