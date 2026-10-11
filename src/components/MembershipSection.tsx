@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Crown, Truck, Tags, ShoppingCart, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createMembershipCheckoutUrl } from '@/lib/shopify';
+import { useMemberStore } from '@/stores/memberStore';
 import { toast } from 'sonner';
 
 const perks = [
@@ -13,6 +14,7 @@ const perks = [
 
 const MembershipSection = () => {
   const [joining, setJoining] = useState(false);
+  const isMember = useMemberStore((state) => state.isMember);
 
   const handleJoin = async () => {
     setJoining(true);
@@ -28,6 +30,8 @@ const MembershipSection = () => {
     }
     setJoining(false);
   };
+
+  if (isMember) return null;
 
   return (
     <section className="py-24 bg-muted/30 border-y border-border/50">
