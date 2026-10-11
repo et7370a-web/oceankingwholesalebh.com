@@ -1,10 +1,6 @@
 import { motion } from 'framer-motion';
-import { Check, Crown, Truck, Tags, ShoppingCart } from 'lucide-react';
+import { Crown, Truck, Tags, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCartStore } from '@/stores/cartStore';
-import { useQuery } from '@tanstack/react-query';
-import { fetchShopifyProducts } from '@/lib/shopify';
-import { toast } from 'sonner';
 
 const perks = [
   { icon: Truck, text: 'Free shipping on every order' },
@@ -12,42 +8,9 @@ const perks = [
   { icon: Crown, text: 'Members-only deals and early access' },
 ];
 
+const MEMBERSHIP_URL = "https://oceanfishmarketbh-lbrgl.myshopify.com/products/annual-membership";
+
 const MembershipSection = () => {
-  const addItem = useCartStore(state => state.addItem);
-  const isLoading = useCartStore(state => state.isLoading);
-
-  const { data: shopifyProducts } = useQuery({
-    queryKey: ['shopify-products'],
-    queryFn: () => fetchShopifyProducts(50),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const findMembershipVariant = (titleQuery: string) => {
-    const product = shopifyProducts?.find(sp =>
-      sp.node.title.toLowerCase().includes(titleQuery.toLowerCase())
-    );
-    const variant = product?.node.variants.edges[0]?.node;
-    return { product, variant };
-  };
-
-  const handleAddMembership = async (titleQuery: string) => {
-    const { product, variant } = findMembershipVariant(titleQuery);
-    if (!product || !variant) {
-      toast.error('Membership product is not available yet');
-      return;
-    }
-
-    await addItem({
-      product,
-      variantId: variant.id,
-      variantTitle: variant.title,
-      price: variant.price,
-      quantity: 1,
-      selectedOptions: variant.selectedOptions || [],
-    });
-
-    toast.success(`${product.node.title} added to cart`, { position: 'top-center' });
-  };
 
   return (
     <section className="py-24 bg-muted/30 border-y border-border/50">
@@ -99,7 +62,7 @@ const MembershipSection = () => {
                   <span className="font-display text-5xl font-black text-primary">$36</span>
                   <span className="text-muted-foreground">/ year</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">Billed once. Cancel anytime.</p>
+                <p className="text-sm text-muted-foreground mt-2">Renews every year. Cancel anytime.</p>
               </div>
 
               <ul className="space-y-4 mb-8 flex-1">
@@ -111,14 +74,11 @@ const MembershipSection = () => {
                 ))}
               </ul>
 
-              <Button
-                size="lg"
-                className="w-full"
-                onClick={() => handleAddMembership('Annual Membership')}
-                disabled={isLoading}
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Add Annual Membership
+              <Button size="lg" className="w-full" asChild>
+                <a href={MEMBERSHIP_URL} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Join Annual Membership
+                </a>
               </Button>
             </motion.div>
           </div>
