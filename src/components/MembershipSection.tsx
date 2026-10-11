@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Crown, Truck, Tags, ExternalLink } from 'lucide-react';
+import { Crown, Truck, Tags, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const perks = [
@@ -7,8 +7,6 @@ const perks = [
   { icon: Tags, text: '$9.99/lb on most fish* (5 lb minimum per order)' },
   { icon: Crown, text: 'Members-only deals and early access' },
 ];
-
-const MEMBERSHIP_URL = "https://oceanfishmarketbh-lbrgl.myshopify.com/products/annual-membership";
 
 const MembershipSection = () => {
 
@@ -75,9 +73,9 @@ const MembershipSection = () => {
               </ul>
 
               <Button size="lg" className="w-full" asChild>
-                <a href={MEMBERSHIP_URL} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Join Annual Membership
+                <a href="tel:+16467509232">
+                  <Phone className="w-4 h-4 mr-2" />
+                  Call to Join: (646) 750-9232
                 </a>
               </Button>
             </motion.div>
@@ -91,12 +89,6 @@ const MembershipSection = () => {
             viewport={{ once: true }}
           >
             *Exceptions apply, e.g. Chilean sea bass and king salmon.
-            <br />
-            Prefer to join by phone? Call{' '}
-            <a href="tel:+16467509232" className="font-semibold text-foreground hover:text-secondary transition-colors">
-              (646) 750-9232
-            </a>
-            .
           </motion.p>
         </div>
       </div>
