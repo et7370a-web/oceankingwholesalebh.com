@@ -45,7 +45,7 @@ const FishSpecies = () => {
 
   const canonicalUrl = `https://oceankingwholesalebh.com/fish/${species}`;
   const pageTitle = `${info.name} – Fresh Wild-Caught | Ocean King Fishmarket`;
-  const pageDesc = `Order fresh wild-caught ${info.name.toLowerCase()} online — $9.99/lb, 5 lb minimum. Delivered to NYC, Long Island & NJ within 24 hours.`;
+  const pageDesc = `Order fresh wild-caught ${info.name.toLowerCase()} online — $9.99/lb, 5 lb minimum. Delivered to NYC, Long Island, Westchester & NJ within 24 hours.`;
 
   return (
     <div className="min-h-screen bg-background">

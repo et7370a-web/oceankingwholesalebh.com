@@ -69,7 +69,7 @@ for (const m of productsSrc.matchAll(speciesRe)) {
   const [, slug, name, rawDesc] = m;
   const desc = rawDesc.replace(/\\'/g, "'");
   const title = `${name} – Fresh Wild-Caught | Ocean King Wholesale`;
-  const metaDesc = `Order fresh wild-caught ${name.toLowerCase()} online — $9.99/lb whole fish, 5 lb minimum. Cut to order. Delivered to NYC, Long Island & NJ within 24 hours.`;
+  const metaDesc = `Order fresh wild-caught ${name.toLowerCase()} online — $9.99/lb whole fish, 5 lb minimum. Cut to order. Delivered to NYC, Long Island, Westchester & NJ within 24 hours.`;
   const url = `${SITE}/fish/${slug}`;
   let page = baseHtml
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
@@ -99,7 +99,7 @@ if (!home.includes('rel="canonical"')) {
 if (!home.includes('<noscript>')) {
   home = home.replace(
     '<div id="root"></div>',
-    `<div id="root"></div>\n    <noscript><main><h1>Ocean King Wholesale – Fresh Wild-Caught Fish Delivered in NYC, Long Island &amp; NJ</h1><p>Whole wild-caught fish at $9.99/lb, 5 lb minimum, cut to order. Salmon, tuna, branzino, red snapper, grouper, cod, halibut, flounder and more. Call (646) 750-9232.</p></main></noscript>`
+    `<div id="root"></div>\n    <noscript><main><h1>Ocean King Wholesale – Fresh Wild-Caught Fish Delivered in NYC, Long Island, Westchester &amp; NJ</h1><p>Whole wild-caught fish at $9.99/lb, 5 lb minimum, cut to order. Salmon, tuna, branzino, red snapper, grouper, cod, halibut, flounder and more. Call (646) 750-9232.</p></main></noscript>`
   );
 }
 fs.writeFileSync(indexPath, home);

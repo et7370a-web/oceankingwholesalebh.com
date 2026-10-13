@@ -38,7 +38,7 @@ const ProductDetail = () => {
 
   const canonicalUrl = `https://oceankingwholesalebh.com/fish/${species}/${product.id}`;
   const pageTitle = `${product.name} – ${product.type} | Ocean King Fishmarket`;
-  const pageDesc = `${product.name} — $9.99/lb wild-caught ${speciesInfo[species].name.toLowerCase()} from ${product.origin}. 5 lb minimum, delivered fresh to NYC, Long Island & NJ within 24 hours.`.slice(0, 160);
+  const pageDesc = `${product.name} — $9.99/lb wild-caught ${speciesInfo[species].name.toLowerCase()} from ${product.origin}. 5 lb minimum, delivered fresh to NYC, Long Island, Westchester & NJ within 24 hours.`.slice(0, 160);
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -222,7 +222,7 @@ const ProductDetail = () => {
               <div className="space-y-2">
                 <div className="p-3 sm:p-4 bg-muted/50 rounded-xl text-sm text-muted-foreground flex items-start gap-3">
                   <Package className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary" />
-                  <p>5 lb minimum total order — mix & match any fish. Free delivery to NYC, Long Island & NJ.</p>
+                  <p>5 lb minimum total order — mix & match any fish. Free delivery to NYC, Long Island, Westchester & NJ.</p>
                 </div>
               </div>
             </motion.div>

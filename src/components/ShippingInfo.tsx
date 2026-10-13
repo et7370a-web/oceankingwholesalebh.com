@@ -4,6 +4,7 @@ import { Truck, Clock, MapPin, Package, Zap, DollarSign } from 'lucide-react';
 const deliveryAreas = [
   'All five boroughs of New York City',
   'Long Island',
+  'Westchester',
   'New Jersey',
 ];
 
