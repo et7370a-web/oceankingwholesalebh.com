@@ -7,7 +7,7 @@ import { useMemberStore } from '@/stores/memberStore';
 import { toast } from 'sonner';
 
 const perks = [
-  { icon: Truck, text: 'Free shipping on every order' },
+  { icon: Truck, text: 'Free delivery on every order' },
   { icon: Tags, text: '$9.99/lb on most fish* (5 lb minimum per order)' },
   { icon: Crown, text: 'Members-only deals and early access' },
 ];
@@ -54,7 +54,7 @@ const MembershipSection = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Join for <span className="text-ocean-gradient">Free Shipping</span> & Wholesale Prices
+              Join for <span className="text-ocean-gradient">Free Delivery</span> & Wholesale Prices
             </motion.h2>
             <motion.p
               className="text-lg text-muted-foreground max-w-2xl mx-auto"
